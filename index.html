@@ -26,99 +26,113 @@
 
   <style>
     :root {
-      --cream:      #f7f3ee;
-      --espresso:   #2a1f14;
-      --gold:       #b8955a;
-      --gold-glow:  rgba(184, 149, 90, 0.22);
-      --gold-soft:  rgba(184, 149, 90, 0.15);
-      --hairline:   rgba(184, 149, 90, 0.25);
-      --muted:      rgba(42, 31, 20, 0.62);
+      --cream:       #f7f3ee;
+      --espresso:    #2a1f14;
+      --copper:      #b87333;
+      --copper-glow: rgba(184, 115, 51, 0.20);
+      --hairline:    rgba(184, 115, 51, 0.32);
+      --muted:       rgba(42, 31, 20, 0.60);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html { -webkit-text-size-adjust: 100%; }
 
     body {
+      position: relative;
       min-height: 100vh;
       min-height: 100svh;
       display: grid;
       place-items: center;
       padding: 2.5rem 1.5rem;
+      overflow: hidden;
       background-color: var(--cream);
-      background-image: radial-gradient(ellipse 62% 52% at 50% 42%, var(--gold-glow), transparent 70%);
       color: var(--espresso);
       font-family: 'Inter', system-ui, -apple-system, sans-serif;
       -webkit-font-smoothing: antialiased;
       text-rendering: optimizeLegibility;
     }
 
+    /* ── ambient breathing glow (sits behind everything) ── */
+    .glow {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background: radial-gradient(ellipse 60% 52% at 50% 41%, var(--copper-glow), transparent 70%);
+      animation: breathe 9s ease-in-out infinite;
+    }
+
     .stage {
+      position: relative;
+      z-index: 1;
       width: 100%;
-      max-width: 36rem;
+      max-width: 40rem;
       display: flex;
       flex-direction: column;
       align-items: center;
       text-align: center;
-      animation: rise 1s cubic-bezier(0.22, 1, 0.36, 1) both;
     }
 
-    /* ── brand lockup ── */
-    .mark {
-      display: grid;
-      place-items: center;
-      width: 4.5rem;
-      height: 4.5rem;
-      border-radius: 1rem;
-      background: var(--gold-soft);
-      border: 1px solid var(--hairline);
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55);
-      font-family: 'Cormorant Garamond', Georgia, serif;
-      font-weight: 600;
-      font-size: 2.65rem;
-      line-height: 1;
-      color: var(--gold);
+    /* ── logo: arrival + continuous float, with a periodic sheen ── */
+    .logo-wrap {
+      position: relative;
+      display: inline-block;
+      overflow: hidden;
+      animation:
+        logoArrive 1.2s cubic-bezier(0.22, 1, 0.36, 1) 0.05s both,
+        float 6s ease-in-out 1.3s infinite;
     }
-    .wordmark {
-      margin-top: 1.15rem;
-      font-family: 'Cormorant Garamond', Georgia, serif;
-      font-weight: 500;
-      font-size: 2rem;
-      line-height: 1;
-      letter-spacing: 0.01em;
-      color: var(--espresso);
+    .logo {
+      display: block;
+      width: clamp(260px, 64vw, 520px);
+      height: auto;
+      aspect-ratio: 1505 / 320;
     }
+    .logo-wrap::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: linear-gradient(105deg, transparent 40%, rgba(255, 251, 244, 0.55) 50%, transparent 60%);
+      transform: translateX(-150%);
+      animation: sheen 7s ease-out 1.6s infinite;
+    }
+
     .eyebrow {
-      margin-top: 0.6rem;
-      font-size: 0.66rem;
+      margin-top: 1.5rem;
+      font-size: 0.68rem;
       font-weight: 600;
-      letter-spacing: 0.32em;
+      letter-spacing: 0.34em;
       text-transform: uppercase;
-      color: var(--gold);
+      color: var(--copper);
+      animation: fadeUp 0.8s ease-out 0.55s both;
     }
 
     .divider {
       width: 2.5rem;
       height: 1px;
-      margin: 2.25rem 0;
+      margin: 2.1rem 0;
       border: 0;
       background: linear-gradient(90deg, transparent, var(--hairline), transparent);
+      animation: fadeUp 0.8s ease-out 0.66s both;
     }
 
-    /* ── message ── */
     .headline {
       font-family: 'Cormorant Garamond', Georgia, serif;
       font-weight: 500;
-      font-size: clamp(3rem, 9vw, 4.5rem);
+      font-size: clamp(2.8rem, 8.5vw, 4.2rem);
       line-height: 1.02;
       letter-spacing: -0.015em;
       color: var(--espresso);
+      animation: fadeUp 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.78s both;
     }
     .pitch {
       margin-top: 1.15rem;
-      max-width: 28rem;
+      max-width: 29rem;
       font-size: 1.025rem;
       line-height: 1.6;
       color: var(--muted);
+      animation: fadeUp 0.8s ease-out 0.96s both;
     }
 
     .footer {
@@ -126,27 +140,50 @@
       font-size: 0.72rem;
       letter-spacing: 0.06em;
       color: var(--muted);
+      animation: fadeUp 0.8s ease-out 1.14s both;
     }
 
-    @keyframes rise {
-      from { opacity: 0; transform: translateY(14px); }
+    @keyframes logoArrive {
+      from { opacity: 0; transform: translateY(16px) scale(0.9); filter: blur(8px); }
+      to   { opacity: 1; transform: translateY(0)   scale(1);   filter: blur(0); }
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50%      { transform: translateY(-6px); }
+    }
+    @keyframes sheen {
+      0%   { transform: translateX(-150%); }
+      14%  { transform: translateX(150%); }
+      100% { transform: translateX(150%); }
+    }
+    @keyframes breathe {
+      0%, 100% { opacity: 0.55; transform: scale(1); }
+      50%      { opacity: 1;    transform: scale(1.07); }
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
       to   { opacity: 1; transform: translateY(0); }
     }
+
     @media (prefers-reduced-motion: reduce) {
-      .stage { animation: none; }
+      .glow { animation: none; opacity: 0.85; }
+      .logo-wrap { animation: none; }
+      .logo-wrap::after { display: none; }
+      .eyebrow, .divider, .headline, .pitch, .footer { animation: none; }
     }
+
     @media (max-width: 30rem) {
-      .mark { width: 4rem; height: 4rem; font-size: 2.35rem; }
-      .wordmark { font-size: 1.7rem; }
-      .divider { margin: 1.85rem 0; }
+      .divider { margin: 1.75rem 0; }
       .footer { margin-top: 2.5rem; }
     }
   </style>
 </head>
 <body>
+  <div class="glow" aria-hidden="true"></div>
   <main class="stage">
-    <span class="mark" aria-hidden="true">N</span>
-    <div class="wordmark">NexoGRX</div>
+    <div class="logo-wrap">
+      <img class="logo" src="/logo.svg" alt="NexoGRX" width="520" height="111">
+    </div>
     <p class="eyebrow">Granada · España</p>
 
     <hr class="divider">
