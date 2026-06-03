@@ -16,7 +16,7 @@ jobs:
       - name: Generate sitemap.xml
         run: node scripts/generate-sitemap.mjs
         env:
-          SITE_ORIGIN: https://nexogrx-coming-soon.pages.dev
+          SITE_ORIGIN: https://nexogrx.es
 
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3
