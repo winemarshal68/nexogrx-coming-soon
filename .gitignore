@@ -1,0 +1,8 @@
+.DS_Store
+.wrangler/
+node_modules/
+output/
+.env
+.env.local
+*.log
+.nexo-create-state.json

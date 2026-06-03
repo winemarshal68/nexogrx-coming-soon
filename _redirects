@@ -1,0 +1,7 @@
+# Cloudflare Pages redirects.
+# Format: <source> <destination> <status>
+# Example: /old-page /new-page 301
+# Wildcards: /docs/* /documentation/:splat 301
+#
+# Note: host-based source rules (e.g. //example.com/*) are silently ignored
+# by CF Pages. For apex→www redirects use functions/_middleware.js instead.

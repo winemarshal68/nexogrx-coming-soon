@@ -1,0 +1,6 @@
+{
+  "name": "static-html",
+  "description": "Minimal Cloudflare Pages static site with HTML/CSS, _headers, _redirects, no-op middleware, sitemap generator, and GitHub Actions deploy via wrangler.",
+  "substitutions": ["nexogrx-coming-soon"],
+  "post_create": []
+}
